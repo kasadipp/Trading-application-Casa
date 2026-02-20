@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📈 Mon Plan de Trading</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #F0B429;
+  --gold2: #e0a800;
+  --green: #00C896;
+  --red: #FF4B6E;
+  --blue: #38BDF8;
+  --bg: #080C14;
+  --bg2: #0D1420;
+  --bg3: #121A28;
+  --card: #151E2E;
+  --card2: #1A2438;
+  --border: #1E2D44;
+  --text: #E8EDF5;
+  --muted: #5A7090;
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:var(--font-body); min-height:100vh; }
+
+/* NAV */
+nav {
+  background:var(--bg2);
+  border-bottom:1px solid var(--border);
+  position:sticky; top:0; z-index:100;
+  display:flex; align-items:center; gap:0;
+  overflow-x:auto;
+  scrollbar-width:none;
+}
+nav::-webkit-scrollbar { display:none; }
+.nav-brand {
+  font-family:var(--font-display);
+  font-size:1.4rem;
+  color:var(--gold);
+  padding:0 20px;
+  letter-spacing:2px;
+  white-space:nowrap;
+  border-right:1px solid var(--border);
+  min-width:fit-content;
+}
+.nav-btn {
+  background:none; border:none; color:var(--muted);
+  font-family:var(--font-body); font-size:0.8rem;
+  padding:16px 16px; cursor:pointer;
+  white-space:nowrap;
+  transition:all 0.2s;
+  border-bottom:2px solid transparent;
+  font-weight:500;
+  letter-spacing:0.5px;
+}
+.nav-btn:hover { color:var(--text); }
+.nav-btn.active { color:var(--gold); border-bottom-color:var(--gold); }
+
+/* PAGES */
+.page { display:none; padding:24px; max-width:1100px; margin:0 auto; }
+.page.active { display:block; }
+
+/* HEADER */
+.page-header {
+  display:flex; align-items:center; gap:12px;
+  margin-bottom:28px;
+}
+.page-title {
+  font-family:var(--font-display);
+  font-size:2.2rem;
+  letter-spacing:3px;
+  color:var(--text);
+}
+.page-icon { font-size:1.8rem; }
+
+/* CARDS */
+.card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:20px;
+  margin-bottom:16px;
+}
+.card-title {
+  font-family:var(--font-display);
+  font-size:1.1rem;
+  letter-spacing:2px;
+  color:var(--gold);
+  margin-bottom:16px;
+  display:flex; align-items:center; gap:8px;
+}
+
+/* DASHBOARD */
+.stats-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));
+  gap:12px;
+  margin-bottom:20px;
+}
+.stat-card {
+  background:var(--card2);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:16px;
+  text-align:center;
+}
+.stat-value {
+  font-family:var(--font-mono);
+  font-size:1.6rem;
+  font-weight:600;
+  margin-bottom:4px;
+}
+.stat-label {
+  font-size:0.72rem;
+  color:var(--muted);
+  text-transform:uppercase;
+  letter-spacing:1px;
+}
+.stat-green { color:var(--green); }
+.stat-red { color:var(--red); }
+.stat-gold { color:var(--gold); }
+.stat-blue { color:var(--blue); }
+
+/* STRATEGY RULES */
+.rules-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
+  gap:12px;
+}
+.rule-card {
+  background:var(--card2);
+  border-radius:10px;
+  padding:16px;
+  border-left:3px solid;
+}
+.rule-card.buy { border-color:var(--green); }
+.rule-card.sell { border-color:var(--red); }
+.rule-card.eq { border-color:var(--gold); }
+.rule-card.sr { border-color:var(--blue); }
+.rule-title {
+  font-weight:600;
+  font-size:0.85rem;
+  margin-bottom:8px;
+  display:flex; align-items:center; gap:6px;
+}
+.rule-card.buy .rule-title { color:var(--green); }
+.rule-card.sell .rule-title { color:var(--red); }
+.rule-card.eq .rule-title { color:var(--gold); }
+.rule-card.sr .rule-title { color:var(--blue); }
+.rule-steps { list-style:none; }
+.rule-steps li {
+  font-size:0.78rem;
+  color:var(--muted);
+  padding:3px 0;
+  padding-left:12px;
+  position:relative;
+  line-height:1.4;
+}
+.rule-steps li::before {
+  content:'→';
+  position:absolute; left:0;
+  color:inherit;
+  opacity:0.6;
+}
+
+/* SESSIONS TABLE */
+.sessions-table {
+  width:100%;
+  border-collapse:collapse;
+  font-size:0.82rem;
+}
+.sessions-table th {
+  background:var(--bg3);
+  color:var(--muted);
+  padding:10px 12px;
+  text-align:left;
+  font-size:0.72rem;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  border-bottom:1px solid var(--border);
+}
+.sessions-table td {
+  padding:10px 12px;
+  border-bottom:1px solid var(--border);
+}
+.dot {
+  width:10px; height:10px;
+  border-radius:50%;
+  display:inline-block;
+  margin-right:6px;
+}
+
+/* CHECKLIST */
+.checklist { list-style:none; }
+.check-item {
+  display:flex; align-items:flex-start; gap:12px;
+  padding:10px 0;
+  border-bottom:1px solid var(--border);
+  cursor:pointer;
+  transition:all 0.2s;
+}
+.check-item:last-child { border-bottom:none; }
+.check-item:hover { background:var(--card2); margin:0 -8px; padding:10px 8px; border-radius:8px; border-bottom:1px solid transparent; }
+.check-box {
+  width:20px; height:20px; min-width:20px;
+  border:2px solid var(--border);
+  border-radius:5px;
+  display:flex; align-items:center; justify-content:center;
+  transition:all 0.2s;
+  margin-top:1px;
+}
+.check-item.checked .check-box {
+  background:var(--green);
+  border-color:var(--green);
+}
+.check-item.checked .check-text { color:var(--muted); text-decoration:line-through; }
+.check-text { font-size:0.85rem; line-height:1.4; }
+.check-progress {
+  height:4px; background:var(--border);
+  border-radius:4px; margin-bottom:16px;
+  overflow:hidden;
+}
+.check-progress-bar {
+  height:100%; background:var(--green);
+  border-radius:4px;
+  transition:width 0.4s ease;
+}
+.check-score {
+  font-family:var(--font-mono);
+  font-size:0.8rem;
+  color:var(--muted);
+  margin-bottom:12px;
+}
+
+/* JOURNAL */
+.journal-form {
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(160px, 1fr));
+  gap:12px;
+  margin-bottom:16px;
+}
+.form-group { display:flex; flex-direction:column; gap:6px; }
+.form-group.full { grid-column:1/-1; }
+label { font-size:0.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:1px; }
+input, select, textarea {
+  background:var(--bg3);
+  border:1px solid var(--border);
+  border-radius:8px;
+  color:var(--text);
+  font-family:var(--font-body);
+  font-size:0.85rem;
+  padding:10px 12px;
+  transition:border 0.2s;
+  width:100%;
+}
+input:focus, select:focus, textarea:focus {
+  outline:none;
+  border-color:var(--gold);
+}
+select option { background:var(--bg3); }
+textarea { resize:vertical; min-height:70px; }
+
+.btn {
+  border:none; border-radius:8px;
+  font-family:var(--font-body); font-weight:600;
+  cursor:pointer; transition:all 0.2s;
+  font-size:0.85rem;
+  padding:10px 20px;
+}
+.btn-gold { background:var(--gold); color:#000; }
+.btn-gold:hover { background:var(--gold2); }
+.btn-danger { background:var(--red); color:#fff; font-size:0.75rem; padding:6px 12px; }
+.btn-danger:hover { opacity:0.85; }
+.btn-sm { padding:6px 14px; font-size:0.78rem; }
+
+/* TRADES TABLE */
+.trades-wrap { overflow-x:auto; }
+.trades-table {
+  width:100%; border-collapse:collapse;
+  font-size:0.8rem; min-width:700px;
+}
+.trades-table th {
+  background:var(--bg3);
+  color:var(--muted);
+  padding:10px 12px;
+  text-align:left;
+  font-size:0.7rem;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  border-bottom:1px solid var(--border);
+  white-space:nowrap;
+}
+.trades-table td {
+  padding:10px 12px;
+  border-bottom:1px solid var(--border);
+  font-family:var(--font-mono);
+  font-size:0.78rem;
+}
+.trades-table tr:hover td { background:var(--card2); }
+.badge {
+  padding:3px 8px; border-radius:4px;
+  font-size:0.7rem; font-weight:600;
+  font-family:var(--font-mono);
+}
+.badge-buy { background:rgba(0,200,150,0.15); color:var(--green); }
+.badge-sell { background:rgba(255,75,110,0.15); color:var(--red); }
+.badge-win { background:rgba(0,200,150,0.15); color:var(--green); }
+.badge-loss { background:rgba(255,75,110,0.15); color:var(--red); }
+.badge-asia { background:rgba(56,189,248,0.15); color:var(--blue); }
+.badge-london { background:rgba(0,200,150,0.15); color:var(--green); }
+.badge-ny { background:rgba(240,180,41,0.15); color:var(--gold); }
+.profit-pos { color:var(--green); }
+.profit-neg { color:var(--red); }
+
+/* GALERIE */
+.gallery-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));
+  gap:16px;
+}
+.gallery-card {
+  background:var(--card2);
+  border:1px solid var(--border);
+  border-radius:10px;
+  overflow:hidden;
+}
+.gallery-img-area {
+  width:100%; height:180px;
+  background:var(--bg3);
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer;
+  position:relative;
+  overflow:hidden;
+  border-bottom:1px solid var(--border);
+}
+.gallery-img-area img {
+  width:100%; height:100%; object-fit:cover;
+}
+.gallery-img-area .upload-hint {
+  display:flex; flex-direction:column; align-items:center; gap:8px;
+  color:var(--muted); font-size:0.8rem; text-align:center;
+}
+.gallery-img-area .upload-icon { font-size:2rem; opacity:0.4; }
+.gallery-info { padding:12px; }
+.gallery-meta {
+  display:flex; justify-content:space-between; align-items:center;
+  margin-bottom:8px;
+}
+.gallery-date { font-size:0.75rem; color:var(--muted); font-family:var(--font-mono); }
+.gallery-note { font-size:0.8rem; color:var(--text); }
+.add-capture-btn {
+  border:2px dashed var(--border);
+  background:none;
+  border-radius:10px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:8px; height:280px; cursor:pointer;
+  color:var(--muted); font-size:0.85rem;
+  transition:all 0.2s; width:100%;
+  font-family:var(--font-body);
+}
+.add-capture-btn:hover { border-color:var(--gold); color:var(--gold); }
+
+/* RISK */
+.risk-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:12px; }
+.risk-rule {
+  background:var(--card2); border-radius:10px; padding:14px;
+  border-left:3px solid var(--gold);
+  font-size:0.82rem; line-height:1.5; color:var(--text);
+}
+.risk-rule strong { color:var(--gold); display:block; margin-bottom:4px; font-size:0.75rem; text-transform:uppercase; letter-spacing:1px; }
+
+/* BILAN */
+.bilan-form { display:grid; gap:12px; }
+.bilan-row { display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px; }
+.bilan-text {
+  background:var(--bg3); border:1px solid var(--border); border-radius:8px;
+  color:var(--text); font-family:var(--font-body); font-size:0.85rem;
+  padding:10px 12px; width:100%; min-height:80px; resize:vertical;
+}
+
+/* EMPTY STATE */
+.empty-state {
+  text-align:center; padding:48px 24px; color:var(--muted);
+}
+.empty-icon { font-size:3rem; margin-bottom:12px; opacity:0.4; }
+.empty-text { font-size:0.85rem; }
+
+/* TOAST */
+.toast {
+  position:fixed; bottom:24px; right:24px;
+  background:var(--green); color:#000;
+  padding:12px 20px; border-radius:10px;
+  font-weight:600; font-size:0.85rem;
+  transform:translateY(80px); opacity:0;
+  transition:all 0.3s;
+  z-index:999;
+}
+.toast.show { transform:translateY(0); opacity:1; }
+
+/* RESPONSIVE */
+@media(max-width:600px) {
+  .page { padding:16px; }
+  .page-title { font-size:1.6rem; }
+  .stats-grid { grid-template-columns:repeat(2,1fr); }
+}
+
+/* STEP PROCESS */
+.steps { display:flex; flex-direction:column; gap:0; }
+.step {
+  display:flex; gap:16px; align-items:flex-start;
+  padding:12px 0;
+  border-left:2px solid var(--border);
+  margin-left:16px;
+  padding-left:24px;
+  position:relative;
+}
+.step::before {
+  content:attr(data-n);
+  position:absolute; left:-12px; top:12px;
+  width:22px; height:22px;
+  background:var(--gold); color:#000;
+  border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:0.7rem; font-weight:700;
+  font-family:var(--font-mono);
+}
+.step-text { font-size:0.85rem; line-height:1.5; padding-top:2px; }
+.step-title { font-weight:600; color:var(--gold); margin-bottom:2px; font-size:0.82rem; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">📈 TRADING</div>
+  <button class="nav-btn active" onclick="showPage('dashboard')">🏠 Dashboard</button>
+  <button class="nav-btn" onclick="showPage('strategie')">📋 Stratégie</button>
+  <button class="nav-btn" onclick="showPage('risque')">🛡️ Risque</button>
+  <button class="nav-btn" onclick="showPage('checklist')">✅ Checklist</button>
+  <button class="nav-btn" onclick="showPage('journal')">📊 Journal</button>
+  <button class="nav-btn" onclick="showPage('galerie')">📸 Captures</button>
+  <button class="nav-btn" onclick="showPage('bilan')">📝 Bilan</button>
+</nav>
+
+<!-- DASHBOARD -->
+<div class="page active" id="page-dashboard">
+  <div class="page-header">
+    <span class="page-icon">🏠</span>
+    <h1 class="page-title">DASHBOARD</h1>
+  </div>
+
+  <div class="stats-grid" id="stats-grid">
+    <div class="stat-card"><div class="stat-value stat-gold" id="stat-trades">0</div><div class="stat-label">Total Trades</div></div>
+    <div class="stat-card"><div class="stat-value stat-green" id="stat-wins">0</div><div class="stat-label">Gagnants</div></div>
+    <div class="stat-card"><div class="stat-value stat-red" id="stat-losses">0</div><div class="stat-label">Perdants</div></div>
+    <div class="stat-card"><div class="stat-value stat-blue" id="stat-winrate">0%</div><div class="stat-label">Win Rate</div></div>
+    <div class="stat-card"><div class="stat-value stat-green" id="stat-profit">$0</div><div class="stat-label">P&L Total</div></div>
+    <div class="stat-card"><div class="stat-value stat-gold" id="stat-best">$0</div><div class="stat-label">Meilleur Trade</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⚡ RAPPEL DU TRADER</div>
+    <div class="rules-grid">
+      <div class="rule-card buy">
+        <div class="rule-title">📈 Signal Haussier</div>
+        <ul class="rule-steps">
+          <li>Prix casse le High de session</li>
+          <li>Attendre le retest du niveau</li>
+          <li>Entrée achat + confirmation</li>
+          <li>SL sous le Low de session</li>
+        </ul>
+      </div>
+      <div class="rule-card sell">
+        <div class="rule-title">📉 Signal Baissier</div>
+        <ul class="rule-steps">
+          <li>Prix casse le Low de session</li>
+          <li>Attendre le retest du niveau</li>
+          <li>Entrée vente + confirmation</li>
+          <li>SL au-dessus du High de session</li>
+        </ul>
+      </div>
+      <div class="rule-card eq">
+        <div class="rule-title">⚖️ 50% Equilibrium</div>
+        <ul class="rule-steps">
+          <li>Après fort mouvement directionnel</li>
+          <li>Attendre retour au milieu High/Low</li>
+          <li>Chercher bougie de confirmation</li>
+          <li>Entrer dans la direction initiale</li>
+        </ul>
+      </div>
+      <div class="rule-card sr">
+        <div class="rule-title">🔵 Support & Résistance</div>
+        <ul class="rule-steps">
+          <li>High/Low sessions précédentes = niveaux clés</li>
+          <li>Ancien support → résistance (polarity)</li>
+          <li>Ne jamais trader contre ces niveaux</li>
+          <li>Attendre confirmation forte</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STRATÉGIE -->
+<div class="page" id="page-strategie">
+  <div class="page-header">
+    <span class="page-icon">📋</span>
+    <h1 class="page-title">STRATÉGIE</h1>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🕐 SESSIONS DE TRADING (XM GMT+2)</div>
+    <table class="sessions-table">
+      <thead><tr><th>Session</th><th>Horaires Serveur</th><th>Couleur Indicateur</th><th>Caractéristiques</th></tr></thead>
+      <tbody>
+        <tr><td><span class="dot" style="background:#38BDF8"></span>Asie</td><td style="font-family:var(--font-mono)">02h00 → 11h00</td><td>Bleu (DeepSkyBlue)</td><td>Faible volatilité, range</td></tr>
+        <tr><td><span class="dot" style="background:#00C896"></span>Londres</td><td style="font-family:var(--font-mono)">09h00 → 18h00</td><td>Vert (LimeGreen)</td><td>Forte volatilité, tendances</td></tr>
+        <tr><td><span class="dot" style="background:#FF4B6E"></span>New York</td><td style="font-family:var(--font-mono)">14h00 → 23h00</td><td>Rouge/Orange</td><td>Très forte volatilité</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔢 PROCESSUS EN 4 ÉTAPES</div>
+    <div class="steps">
+      <div class="step" data-n="1"><div><div class="step-title">Identifier le biais du jour</div><div class="step-text">Quelle session a créé le dernier High ou Low significatif ? Cela donne la direction probable de la journée (haussier ou baissier).</div></div></div>
+      <div class="step" data-n="2"><div><div class="step-title">Attendre le retour au 50% Equilibrium</div><div class="step-text">Après un mouvement fort, le prix revient souvent au milieu (High + Low / 2). C'est votre zone d'entrée idéale.</div></div></div>
+      <div class="step" data-n="3"><div><div class="step-title">Confirmer avec le price action</div><div class="step-text">Sur le 50% ou sur un High/Low de session, attendre une bougie de confirmation : Pin Bar, Engulfing, ou rejet visible.</div></div></div>
+      <div class="step" data-n="4"><div><div class="step-title">Gérer le trade</div><div class="step-text">SL sous le Low (achat) ou au-dessus du High (vente). TP sur le High/Low de session suivante. Ratio minimum 1:2.</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- RISQUE -->
+<div class="page" id="page-risque">
+  <div class="page-header">
+    <span class="page-icon">🛡️</span>
+    <h1 class="page-title">GESTION DU RISQUE</h1>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💰 RÈGLES DE CAPITAL</div>
+    <div class="risk-grid">
+      <div class="risk-rule"><strong>Risque / Trade</strong>1% à 2% du capital total maximum par position</div>
+      <div class="risk-rule"><strong>Risque / Jour</strong>3% maximum — arrêter si atteint, sans exception</div>
+      <div class="risk-rule"><strong>Risque / Semaine</strong>6% maximum — protéger le capital avant tout</div>
+      <div class="risk-rule"><strong>Ratio R/R</strong>Minimum 1:2 — ne jamais ouvrir en dessous</div>
+      <div class="risk-rule"><strong>Max trades / jour</strong>3 trades maximum par session de trading</div>
+      <div class="risk-rule"><strong>Après 2 pertes</strong>Arrêter la journée et analyser les erreurs</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📐 RÈGLES STOP LOSS & TAKE PROFIT</div>
+    <div class="risk-grid">
+      <div class="risk-rule" style="border-color:var(--green)"><strong style="color:var(--green)">SL Achat</strong>Placé sous le Low de la session en cours + 10 pips de marge de sécurité</div>
+      <div class="risk-rule" style="border-color:var(--red)"><strong style="color:var(--red)">SL Vente</strong>Placé au-dessus du High de la session en cours + 10 pips de marge</div>
+      <div class="risk-rule" style="border-color:var(--blue)"><strong style="color:var(--blue)">TP Principal</strong>High ou Low de la session suivante (ratio min 1:2)</div>
+      <div class="risk-rule" style="border-color:var(--blue)"><strong style="color:var(--blue)">TP Secondaire</strong>50% Equilibrium de la session suivante</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⚠️ RÈGLES DE DISCIPLINE</div>
+    <ul class="checklist" style="pointer-events:none">
+      <li class="check-item"><div class="check-box">✓</div><div class="check-text">Ne jamais augmenter la taille de position après une perte</div></li>
+      <li class="check-item"><div class="check-box">✓</div><div class="check-text">Ne pas trader 30 min avant/après une grosse news (NFP, FOMC)</div></li>
+      <li class="check-item"><div class="check-box">✓</div><div class="check-text">Ne jamais modifier le Stop Loss pour l'élargir</div></li>
+      <li class="check-item"><div class="check-box">✓</div><div class="check-text">Respecter le plan même si le marché semble "évident"</div></li>
+      <li class="check-item"><div class="check-box">✓</div><div class="check-text">Sécuriser le SL au point d'entrée après 50% de l'objectif atteint</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- CHECKLIST -->
+<div class="page" id="page-checklist">
+  <div class="page-header">
+    <span class="page-icon">✅</span>
+    <h1 class="page-title">CHECKLIST</h1>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🎯 AVANT CHAQUE TRADE</div>
+    <div class="check-score" id="check-score">0 / 9 validé</div>
+    <div class="check-progress"><div class="check-progress-bar" id="check-bar" style="width:0%"></div></div>
+    <ul class="checklist" id="checklist">
+      <li class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">J'ai identifié le biais du jour (haussier / baissier)</div></li>
+      <li class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Le prix est sur un niveau clé de session (High, Low ou 50%)</div></li>
+      <li class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">J'ai une bougie de confirmation sur ce niveau</div></li>
+      <li class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Mon Stop Loss est placé correctement (sous Low ou au-dessus du High)</div></li>
+      <li class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Mon ratio Risque/Rendement est au minimum 1:2</div></li>
+      <li class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Je ne risque pas plus de 2% de mon capital sur ce trade</div></li>
+      <li class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Il n'y a pas de news importante dans les 30 prochaines minutes</div></li>
+      <li class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Je n'ai pas déjà perdu 2 trades aujourd'hui</div></li>
+      <li class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Je suis dans un état d'esprit calme et concentré</div></li>
+    </ul>
+    <br>
+    <button class="btn btn-gold" onclick="resetChecklist()">🔄 Réinitialiser pour nouveau trade</button>
+  </div>
+</div>
+
+<!-- JOURNAL -->
+<div class="page" id="page-journal">
+  <div class="page-header">
+    <span class="page-icon">📊</span>
+    <h1 class="page-title">JOURNAL</h1>
+  </div>
+
+  <div class="card">
+    <div class="card-title">➕ AJOUTER UN TRADE</div>
+    <div class="journal-form">
+      <div class="form-group"><label>Date</label><input type="date" id="j-date"></div>
+      <div class="form-group"><label>Session</label>
+        <select id="j-session">
+          <option value="Asie">Asie</option>
+          <option value="Londres">Londres</option>
+          <option value="New York">New York</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Direction</label>
+        <select id="j-direction">
+          <option value="BUY">BUY 📈</option>
+          <option value="SELL">SELL 📉</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Entrée ($)</label><input type="number" id="j-entry" placeholder="ex: 4993.50" step="0.01"></div>
+      <div class="form-group"><label>Stop Loss ($)</label><input type="number" id="j-sl" placeholder="ex: 4998.00" step="0.01"></div>
+      <div class="form-group"><label>Take Profit ($)</label><input type="number" id="j-tp" placeholder="ex: 4985.00" step="0.01"></div>
+      <div class="form-group"><label>Résultat ($)</label><input type="number" id="j-result" placeholder="ex: +31 ou -15" step="0.01"></div>
+      <div class="form-group"><label>Setup utilisé</label>
+        <select id="j-setup">
+          <option value="Cassure High">Cassure High</option>
+          <option value="Cassure Low">Cassure Low</option>
+          <option value="50% Equilibrium">50% Equilibrium</option>
+          <option value="Retest S/R">Retest S/R</option>
+        </select>
+      </div>
+      <div class="form-group full"><label>Notes</label><textarea id="j-notes" placeholder="Décrivez votre analyse, ce qui s'est bien ou mal passé..."></textarea></div>
+    </div>
+    <button class="btn btn-gold" onclick="addTrade()">💾 Enregistrer le trade</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📋 MES TRADES</div>
+    <div class="trades-wrap">
+      <table class="trades-table">
+        <thead><tr><th>Date</th><th>Session</th><th>Dir.</th><th>Entrée</th><th>SL</th><th>TP</th><th>Résultat</th><th>Setup</th><th>Action</th></tr></thead>
+        <tbody id="trades-body"></tbody>
+      </table>
+    </div>
+    <div class="empty-state" id="trades-empty">
+      <div class="empty-icon">📭</div>
+      <div class="empty-text">Aucun trade enregistré. Ajoutez votre premier trade ci-dessus !</div>
+    </div>
+  </div>
+</div>
+
+<!-- GALERIE -->
+<div class="page" id="page-galerie">
+  <div class="page-header">
+    <span class="page-icon">📸</span>
+    <h1 class="page-title">CAPTURES</h1>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🖼️ MES POSITIONS</div>
+    <p style="font-size:0.82rem; color:var(--muted); margin-bottom:16px;">Collez vos captures d'écran de trades pour garder un historique visuel.</p>
+    <div class="gallery-grid" id="gallery-grid">
+      <button class="add-capture-btn" onclick="addCapture()">
+        <span style="font-size:2rem">📷</span>
+        <span>Ajouter une capture</span>
+        <span style="font-size:0.75rem; opacity:0.6">Cliquez pour choisir une image</span>
+      </button>
+    </div>
+  </div>
+  <input type="file" id="file-input" accept="image/*" style="display:none" onchange="handleImage(event)">
+</div>
+
+<!-- BILAN -->
+<div class="page" id="page-bilan">
+  <div class="page-header">
+    <span class="page-icon">📝</span>
+    <h1 class="page-title">BILAN HEBDOMADAIRE</h1>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📅 SEMAINE EN COURS</div>
+    <div class="bilan-form">
+      <div class="bilan-row">
+        <div class="form-group"><label>Semaine du</label><input type="date" id="b-from"></div>
+        <div class="form-group"><label>Au</label><input type="date" id="b-to"></div>
+        <div class="form-group"><label>Biais de la semaine</label>
+          <select id="b-biais">
+            <option>Haussier 📈</option>
+            <option>Baissier 📉</option>
+            <option>Neutre / Range</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group"><label>Leçon 1 — Ce qui a bien fonctionné</label><textarea class="bilan-text" id="b-lesson1" placeholder="Ex: J'ai bien attendu la confirmation avant d'entrer..."></textarea></div>
+      <div class="form-group"><label>Leçon 2 — Ce qui n'a pas fonctionné</label><textarea class="bilan-text" id="b-lesson2" placeholder="Ex: J'ai coupé trop tôt à 19$ au lieu d'attendre 31$..."></textarea></div>
+      <div class="form-group"><label>Leçon 3 — Émotion / Discipline</label><textarea class="bilan-text" id="b-lesson3" placeholder="Ex: J'ai respecté mon plan sans paniquer..."></textarea></div>
+      <div class="form-group"><label>Objectif semaine prochaine</label><textarea class="bilan-text" id="b-next" placeholder="Ex: Améliorer ma patience sur les retests..."></textarea></div>
+      <div>
+        <button class="btn btn-gold" onclick="saveBilan()">💾 Sauvegarder le bilan</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="bilan-history-card" style="display:none">
+    <div class="card-title">📚 HISTORIQUE BILANS</div>
+    <div id="bilan-history"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ---- DATA ----
+let trades = JSON.parse(localStorage.getItem('trades') || '[]');
+let captures = JSON.parse(localStorage.getItem('captures') || '[]');
+let bilans = JSON.parse(localStorage.getItem('bilans') || '[]');
+
+// ---- NAV ----
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  event.target.classList.add('active');
+  if(id === 'dashboard') updateDashboard();
+  if(id === 'journal') renderTrades();
+  if(id === 'galerie') renderGallery();
+  if(id === 'bilan') renderBilanHistory();
+}
+
+// ---- TOAST ----
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ---- CHECKLIST ----
+function toggleCheck(el) {
+  el.classList.toggle('checked');
+  el.querySelector('.check-box').textContent = el.classList.contains('checked') ? '✓' : '';
+  updateCheckProgress();
+}
+function updateCheckProgress() {
+  const items = document.querySelectorAll('#checklist .check-item');
+  const checked = document.querySelectorAll('#checklist .check-item.checked').length;
+  const total = items.length;
+  document.getElementById('check-score').textContent = `${checked} / ${total} validé`;
+  document.getElementById('check-bar').style.width = (checked/total*100) + '%';
+}
+function resetChecklist() {
+  document.querySelectorAll('#checklist .check-item').forEach(i => {
+    i.classList.remove('checked');
+    i.querySelector('.check-box').textContent = '';
+  });
+  updateCheckProgress();
+  showToast('✅ Checklist réinitialisée !');
+}
+
+// ---- JOURNAL ----
+function addTrade() {
+  const date = document.getElementById('j-date').value;
+  const result = parseFloat(document.getElementById('j-result').value);
+  if(!date || isNaN(result)) { showToast('⚠️ Remplissez la date et le résultat !'); return; }
+  const trade = {
+    id: Date.now(),
+    date, result,
+    session: document.getElementById('j-session').value,
+    direction: document.getElementById('j-direction').value,
+    entry: document.getElementById('j-entry').value,
+    sl: document.getElementById('j-sl').value,
+    tp: document.getElementById('j-tp').value,
+    setup: document.getElementById('j-setup').value,
+    notes: document.getElementById('j-notes').value,
+  };
+  trades.unshift(trade);
+  localStorage.setItem('trades', JSON.stringify(trades));
+  ['j-date','j-entry','j-sl','j-tp','j-result','j-notes'].forEach(id => document.getElementById(id).value = '');
+  renderTrades();
+  updateDashboard();
+  showToast('💾 Trade enregistré !');
+}
+function deleteTrade(id) {
+  trades = trades.filter(t => t.id !== id);
+  localStorage.setItem('trades', JSON.stringify(trades));
+  renderTrades();
+  updateDashboard();
+  showToast('🗑️ Trade supprimé');
+}
+function renderTrades() {
+  const tbody = document.getElementById('trades-body');
+  const empty = document.getElementById('trades-empty');
+  if(trades.length === 0) { tbody.innerHTML=''; empty.style.display='block'; return; }
+  empty.style.display = 'none';
+  tbody.innerHTML = trades.map(t => `
+    <tr>
+      <td>${t.date}</td>
+      <td><span class="badge badge-${t.session==='Asie'?'asia':t.session==='Londres'?'london':'ny'}">${t.session}</span></td>
+      <td><span class="badge badge-${t.direction==='BUY'?'buy':'sell'}">${t.direction}</span></td>
+      <td>${t.entry||'—'}</td>
+      <td>${t.sl||'—'}</td>
+      <td>${t.tp||'—'}</td>
+      <td class="${t.result>=0?'profit-pos':'profit-neg'}" style="font-weight:600">${t.result>=0?'+':''}${t.result}$</td>
+      <td>${t.setup}</td>
+      <td><button class="btn btn-danger" onclick="deleteTrade(${t.id})">🗑️</button></td>
+    </tr>
+  `).join('');
+}
+
+// ---- DASHBOARD ----
+function updateDashboard() {
+  const total = trades.length;
+  const wins = trades.filter(t => t.result > 0).length;
+  const losses = trades.filter(t => t.result <= 0).length;
+  const profit = trades.reduce((s,t) => s+t.result, 0);
+  const best = total ? Math.max(...trades.map(t=>t.result)) : 0;
+  const winrate = total ? Math.round(wins/total*100) : 0;
+  document.getElementById('stat-trades').textContent = total;
+  document.getElementById('stat-wins').textContent = wins;
+  document.getElementById('stat-losses').textContent = losses;
+  document.getElementById('stat-winrate').textContent = winrate + '%';
+  document.getElementById('stat-profit').textContent = (profit>=0?'+':'') + profit.toFixed(2) + '$';
+  document.getElementById('stat-profit').className = 'stat-value ' + (profit>=0?'stat-green':'stat-red');
+  document.getElementById('stat-best').textContent = (best>=0?'+':'') + best + '$';
+}
+
+// ---- GALERIE ----
+function addCapture() { document.getElementById('file-input').click(); }
+function handleImage(e) {
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    const note = prompt('Note pour cette capture (optionnel) :') || '';
+    const cap = { id: Date.now(), src: ev.target.result, date: new Date().toLocaleDateString('fr-FR'), note };
+    captures.unshift(cap);
+    localStorage.setItem('captures', JSON.stringify(captures));
+    renderGallery();
+    showToast('📸 Capture ajoutée !');
+  };
+  reader.readAsDataURL(file);
+  e.target.value = '';
+}
+function deleteCapture(id) {
+  captures = captures.filter(c => c.id !== id);
+  localStorage.setItem('captures', JSON.stringify(captures));
+  renderGallery();
+  showToast('🗑️ Capture supprimée');
+}
+function renderGallery() {
+  const grid = document.getElementById('gallery-grid');
+  grid.innerHTML = `<button class="add-capture-btn" onclick="addCapture()">
+    <span style="font-size:2rem">📷</span>
+    <span>Ajouter une capture</span>
+    <span style="font-size:0.75rem;opacity:0.6">Cliquez pour choisir une image</span>
+  </button>`;
+  captures.forEach(c => {
+    const card = document.createElement('div');
+    card.className = 'gallery-card';
+    card.innerHTML = `
+      <div class="gallery-img-area"><img src="${c.src}" alt="capture"></div>
+      <div class="gallery-info">
+        <div class="gallery-meta">
+          <span class="gallery-date">${c.date}</span>
+          <button class="btn btn-danger btn-sm" onclick="deleteCapture(${c.id})">🗑️</button>
+        </div>
+        <div class="gallery-note">${c.note || 'Aucune note'}</div>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+
+// ---- BILAN ----
+function saveBilan() {
+  const from = document.getElementById('b-from').value;
+  const to = document.getElementById('b-to').value;
+  if(!from||!to) { showToast('⚠️ Remplissez les dates !'); return; }
+  const bilan = {
+    id: Date.now(), from, to,
+    biais: document.getElementById('b-biais').value,
+    lesson1: document.getElementById('b-lesson1').value,
+    lesson2: document.getElementById('b-lesson2').value,
+    lesson3: document.getElementById('b-lesson3').value,
+    next: document.getElementById('b-next').value,
+    tradesCount: trades.filter(t => t.date >= from && t.date <= to).length,
+    pnl: trades.filter(t => t.date >= from && t.date <= to).reduce((s,t)=>s+t.result,0)
+  };
+  bilans.unshift(bilan);
+  localStorage.setItem('bilans', JSON.stringify(bilans));
+  ['b-from','b-to','b-lesson1','b-lesson2','b-lesson3','b-next'].forEach(id => document.getElementById(id).value='');
+  renderBilanHistory();
+  showToast('💾 Bilan sauvegardé !');
+}
+function renderBilanHistory() {
+  const card = document.getElementById('bilan-history-card');
+  const div = document.getElementById('bilan-history');
+  if(bilans.length === 0) { card.style.display='none'; return; }
+  card.style.display = 'block';
+  div.innerHTML = bilans.map(b => `
+    <div style="border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:12px;background:var(--card2)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div style="font-family:var(--font-mono);font-size:0.8rem;color:var(--muted)">${b.from} → ${b.to}</div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <span style="font-family:var(--font-mono);font-weight:700;color:${b.pnl>=0?'var(--green)':'var(--red)'}">${b.pnl>=0?'+':''}${b.pnl.toFixed(2)}$</span>
+          <span style="font-size:0.75rem;color:var(--muted)">${b.tradesCount} trades</span>
+          <button class="btn btn-danger btn-sm" onclick="deleteBilan(${b.id})">🗑️</button>
+        </div>
+      </div>
+      <div style="font-size:0.78rem;color:var(--muted);margin-bottom:6px">Biais : <span style="color:var(--text)">${b.biais}</span></div>
+      ${b.lesson1?`<div style="font-size:0.78rem;margin-bottom:4px"><span style="color:var(--green)">✓ </span>${b.lesson1}</div>`:''}
+      ${b.lesson2?`<div style="font-size:0.78rem;margin-bottom:4px"><span style="color:var(--red)">✗ </span>${b.lesson2}</div>`:''}
+      ${b.next?`<div style="font-size:0.78rem;margin-bottom:4px"><span style="color:var(--gold)">→ </span>${b.next}</div>`:''}
+    </div>
+  `).join('');
+}
+function deleteBilan(id) {
+  bilans = bilans.filter(b => b.id !== id);
+  localStorage.setItem('bilans', JSON.stringify(bilans));
+  renderBilanHistory();
+  showToast('🗑️ Bilan supprimé');
+}
+
+// ---- INIT ----
+document.getElementById('j-date').valueAsDate = new Date();
+updateDashboard();
+renderTrades();
+</script>
+</body>
+</html>
